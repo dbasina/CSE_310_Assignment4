@@ -1,6 +1,6 @@
 // ASU CSE310 Assignment #4
-// Name of Author:
-// ASU ID:
+// Name of Author: Divesh Basina
+// ASU ID: 1205546806
 // Description: this is where you need to design Hash table functions,
 // such as hashInsert, hashDelete, hashSearch and hashDisplay
 // ---- is where you need to add your own codes
