@@ -7,7 +7,6 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-
 using namespace std;
 
 struct Student
@@ -15,15 +14,14 @@ struct Student
     string key;
     string name, gender, inClass_or_onLine, major, campus;
     string status, address, city;
-    struct Student *next = NULL;
+    struct Student *next;
 };
 
 class LinkedList
 {
-private:
+public:
     struct Student *head;
     int size;
-public:
     LinkedList();
     ~LinkedList();
     bool insert(string key, string name, string gender, string inClass_or_onLine,
@@ -34,31 +32,40 @@ public:
     void displayList();
     int getSize();
     bool isFound(string key);
+    
 };
 
 //Constructor
 LinkedList::LinkedList()
 {
-    head = NULL;
+    head = nullptr;
     size = 0;
 }
 
 //Destructor
 LinkedList::~LinkedList()
 {
-    //Add your own codes here
-    //----
-    //----
+    Student *temp = head;
+    Student *del = nullptr;
+    while(temp!=nullptr)
+    {
+        del = temp;
+        temp = temp->next;
+        delete del;
+    }
+    delete del;
+    del = nullptr;
 }
 
 //Return number of students inside the Linked list
 int LinkedList::getSize()
 {
-    struct Student *temp = head;
-    while (temp!=NULL)
+    struct Student *temp;
+    temp = head;
+    while (temp != nullptr)
     {
-        temp=temp->next;
         size = size+1;
+        temp = temp->next;
     }
     return size;
 }
@@ -81,9 +88,16 @@ bool LinkedList::insert(string key, string name, string gender, string inClass_o
     new_student->address=address;
     new_student->city=city;
     
-    // Add new_student to the linked list.
-    new_student->next = head;
-    head = new_student;
+    // If linked list is empty
+    if (head == nullptr)
+    {
+        head = new_student;
+    }
+    else
+    {
+        new_student->next = head;
+        head = new_student;
+    }
     
     // Return
     return true;
@@ -95,8 +109,8 @@ bool LinkedList::deleteStudent(string key)
 {
     // Create temporary student.
     struct Student *temp = head;
-    struct Student *previous = NULL;
-    struct Student *holder = NULL;
+    struct Student *previous = nullptr;
+    struct Student *holder = nullptr;
     
    // Iterate over the linked list to find the student to delete.
     while (temp->key.compare(key) !=0 )
@@ -108,9 +122,9 @@ bool LinkedList::deleteStudent(string key)
     if(temp->key.compare(key) == 0)
        {
            // Check if we are deleting first node.
-           if (previous == NULL)
+           if (previous == nullptr)
            {
-               head = NULL;
+               head = nullptr;
                delete temp;
                
            }
@@ -120,7 +134,7 @@ bool LinkedList::deleteStudent(string key)
            {
                holder = temp;
                previous->next = temp->next;
-               temp=NULL;
+               temp=nullptr;
                delete holder;
            }
            
@@ -133,7 +147,7 @@ bool LinkedList::deleteStudent(string key)
     {
         cout<< "Student not found" << endl;
         temp = head;
-        previous = NULL;
+        previous = nullptr;
         return false;
     }
 }
@@ -163,9 +177,20 @@ bool LinkedList::search(string key)
        //Check the sample output for output format
 void LinkedList::displayList()
 {
-    //Add your own codes here
-        //----
-        //----
+    Student *temp = head;
+    while(temp!= nullptr)
+    {
+        cout<<"Name:\t\t"<<temp->name<<endl;
+        cout<<"Gender:\t\t"<<temp->gender<<endl;
+        cout<<"inClassOrOnline:\t\t"<<temp->inClass_or_onLine<<endl;
+        cout<<"Major:\t\t"<<temp->major<<endl;
+        cout<<"Campus:\t\t"<<temp->campus<<endl;
+        cout<<"Address:\t\t"<<temp->address<<endl;
+        cout<<"City:\t\t"<<temp->city<<endl;
+        
+        temp = temp->next;
+        
+    }
 }
        
 //This function searches the Student with the given key inside the linked list.
