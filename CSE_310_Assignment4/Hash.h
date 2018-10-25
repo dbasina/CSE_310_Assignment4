@@ -1,10 +1,10 @@
 // ASU CSE310 Assignment #4
 // Name of Author: Divesh Basina
 // ASU ID: 1205546806
-// Description: this is where you need to design Hash table functions,
-// such as hashInsert, hashDelete, hashSearch and hashDisplay
-// ---- is where you need to add your own codes
-
+// Description: Hash table using linkedlist of pointers.
+#include <iomanip>
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -15,6 +15,7 @@ using namespace std;
 
 class Hash
 {
+public:
     LinkedList **table;
     int m;
     Hash(int size);
@@ -28,6 +29,7 @@ class Hash
     void hashDisplay();
     int h(string key);
     int nearestPrime(int table_size);
+    void hashInitialize();
 };
 
 //constructor - create an array of LinkedList, m is the number of slots
@@ -35,13 +37,14 @@ Hash::Hash(int size)
 {
     table = new LinkedList*[size];
     m = size;
+    hashInitialize();
 }
 
 //Destructor - release the memory
 Hash::~Hash()
 {
     delete[] table;
-    table = nullptr;
+    table = NULL;
 }
 
 //hashInsert inserts a student with the relevant info. into the hash table.
@@ -50,17 +53,18 @@ bool Hash::hashInsert(string name, string gender, string inClass_or_onLine,
                       string major, string campus, string status,
                       string address, string city)
 {
+    bool ret_val;
     // Create string key
     string key = name + gender + major + address;
     // Convert string key to numeric key
     // Access the pointer to the linked list at table[h(k)] and insert
-    if(table[h(key)] == nullptr)
+    if( table[h(key)] == NULL)
     {
         table[h(key)] = new LinkedList();
     }
         
-    table[h(key)] -> insert(key,name,gender,inClass_or_onLine,major,campus,status,address,city);
-    return true;
+    ret_val = table[h(key)] -> insert(key,name,gender,inClass_or_onLine,major,campus,status,address,city);
+    return ret_val;
 }
 
 //hashDelete deletes a student with the relevant key from the hash table.
@@ -96,14 +100,20 @@ bool Hash::hashSearch(string name, string gender, string major, string address)
     bool found = false;
     string key = name + gender + major + address;
     
-    if (table[h(key)]->search(key))
+    
+    if(table[h(key)]->head!= NULL)
     {
-        found = true;
+        if (table[h(key)]->search(key))
+        {
+            found = true;
+        }
     }
     
     if(found == false)
+    {
         cout << name << " with "<< major << " major, live at "
         << address << " is not found." << endl;
+    }
     return found;
 }
 
@@ -115,15 +125,20 @@ void Hash::hashDisplay()
     
     while (i<m)
     {
-        if ( table[i] == nullptr )
+        if (table[i]->size == 0)
         {
+            cout<<"index:\t"<<i<<"\tlinked list size:\t"<< table[i]->size <<endl;
+            cout<<"The list is empty\n"<<endl;
+            
+            i=i+1;
             continue;
         }
         
         else
         {
-            cout<<"index:\t"<<i<<"\tlinked list size:\t"<< table[i]->size <<endl;
+            cout<<"index:\t"<<i<<"\tlinked list size:\t"<< table[i]->size <<"\n"<<endl;
             table[i]->displayList();
+            cout<<"\n"<<endl;
         }
         i = i+1;
     }
@@ -168,4 +183,13 @@ int Hash::nearestPrime(int table_size)
     
     return prime;
     
+}
+
+// Initialization function to prevent bad memory accesses. Called in the constructor.
+void Hash::hashInitialize()
+{
+    for(int i=0;i<m;i++)
+    {
+        table[i] = new LinkedList();
+    }
 }

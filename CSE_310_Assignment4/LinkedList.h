@@ -3,7 +3,9 @@
 // ASU ID: 1205546806
 // Description: LinkedList implements insert,
 // deleteStudent, search, displayList and isFound functions.
-
+#include <iomanip> 
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -31,14 +33,12 @@ public:
     bool search(string key);
     void displayList();
     int getSize();
-    bool isFound(string key);
-    
 };
 
 //Constructor
 LinkedList::LinkedList()
 {
-    head = nullptr;
+    head = NULL;
     size = 0;
 }
 
@@ -46,15 +46,14 @@ LinkedList::LinkedList()
 LinkedList::~LinkedList()
 {
     Student *temp = head;
-    Student *del = nullptr;
-    while(temp!=nullptr)
+    Student *del = NULL;
+    while(temp!=NULL)
     {
         del = temp;
         temp = temp->next;
         delete del;
+        del = NULL;
     }
-    delete del;
-    del = nullptr;
 }
 
 //Return number of students inside the Linked list
@@ -62,7 +61,7 @@ int LinkedList::getSize()
 {
     struct Student *temp;
     temp = head;
-    while (temp != nullptr)
+    while (temp != NULL)
     {
         size = size+1;
         temp = temp->next;
@@ -87,17 +86,12 @@ bool LinkedList::insert(string key, string name, string gender, string inClass_o
     new_student->campus = campus;
     new_student->address=address;
     new_student->city=city;
+    new_student->next = NULL;
     
-    // If linked list is empty
-    if (head == nullptr)
-    {
-        head = new_student;
-    }
-    else
-    {
-        new_student->next = head;
-        head = new_student;
-    }
+    // Insert at the beginning
+    new_student->next = head;
+    head = new_student;
+    size=size+1;
     
     // Return
     return true;
@@ -109,8 +103,9 @@ bool LinkedList::deleteStudent(string key)
 {
     // Create temporary student.
     struct Student *temp = head;
-    struct Student *previous = nullptr;
-    struct Student *holder = nullptr;
+    string del_name,del_major,del_campus;
+    struct Student *previous = NULL;
+    struct Student *holder = NULL;
     
    // Iterate over the linked list to find the student to delete.
     while (temp->key.compare(key) !=0 )
@@ -121,11 +116,16 @@ bool LinkedList::deleteStudent(string key)
     
     if(temp->key.compare(key) == 0)
        {
+           // Store the name, major and campus for later
+           del_name = temp->name;
+           del_campus = temp->campus;
+           del_major = temp->major;
            // Check if we are deleting first node.
-           if (previous == nullptr)
+           if (previous == NULL)
            {
-               head = nullptr;
+               head = head->next;
                delete temp;
+               temp = NULL;
                
            }
            
@@ -134,12 +134,17 @@ bool LinkedList::deleteStudent(string key)
            {
                holder = temp;
                previous->next = temp->next;
-               temp=nullptr;
+               temp=NULL;
                delete holder;
            }
            
-           cout << temp->name << " in "<< temp->major << " major, on "
-           << temp->campus << " campus is deleted." << endl;
+           cout << del_name << " in "<< del_major << " major, on "
+           << del_campus << " campus is deleted." << endl;
+           size=size-1;
+           // Restore default values after delete
+           del_name ="";
+           del_major="";
+           del_campus="";
            return true;
        }
     
@@ -147,58 +152,49 @@ bool LinkedList::deleteStudent(string key)
     {
         cout<< "Student not found" << endl;
         temp = head;
-        previous = nullptr;
+        previous = NULL;
         return false;
     }
 }
        
 //This function searches the student with the given key
 //returns true if it is found, otherwise return false.
-bool LinkedList::search(string key)
+bool LinkedList::search(string key_input)
 {
     struct Student *temp = head;
-    while (temp->key.compare(key) != 0)
+    
+    while (temp!=NULL)
     {
-        temp = temp->next;
+        if ((temp->key).compare(key_input)==0)
+        {
+            return true;
+            break;
+        }
+        else
+        {
+            temp=temp->next;
+        }
     }
     
-    if (temp->key.compare(key) == 0)
-    {
-        return true;
-    }
-    
-    else
-    {
-        return false;
-    }
+    return false;
 }
        
        //This function displays the content of the linked list.
        //Check the sample output for output format
 void LinkedList::displayList()
 {
-    Student *temp = head;
-    while(temp!= nullptr)
+    struct Student *temp = head;
+    while(temp!= NULL)
     {
-        cout<<"Name:\t\t"<<temp->name<<endl;
-        cout<<"Gender:\t\t"<<temp->gender<<endl;
-        cout<<"inClassOrOnline:\t\t"<<temp->inClass_or_onLine<<endl;
+        cout<<"Name:\t\t"<< temp->name <<endl;
+        cout<<"Gender:\t\t"<< temp->gender <<endl;
+        cout<<"inClassOrOnline:\t\t"<< temp->inClass_or_onLine <<endl;
         cout<<"Major:\t\t"<<temp->major<<endl;
         cout<<"Campus:\t\t"<<temp->campus<<endl;
         cout<<"Address:\t\t"<<temp->address<<endl;
         cout<<"City:\t\t"<<temp->city<<endl;
-        
+        cout<<"\n"<<endl;
         temp = temp->next;
         
     }
-}
-       
-//This function searches the Student with the given key inside the linked list.
-//it returns true if it is found and false otherwise.
-bool LinkedList::isFound(string key)
-{
-    //Add your own codes here
-        //----
-        //----
-    return true;
 }
